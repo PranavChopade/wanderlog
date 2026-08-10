@@ -8,7 +8,7 @@ import jwt from 'jsonwebtoken';
 const cookieOptions = {
   httpOnly: true,
   secure: ENV.NODE_ENV === 'production',
-  sameSite: ENV.NODE_ENV === 'production' ? 'strict' : 'lax',
+  sameSite: ENV.NODE_ENV === 'production' ? 'none' : 'lax',
 };
 
 // Register
