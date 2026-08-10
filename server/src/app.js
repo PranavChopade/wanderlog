@@ -8,13 +8,14 @@ import TripRoutes, {
 } from './routes/trip.routes.js';
 import DayRoutes from './routes/day.routes.js';
 import DashboardRoutes from './routes/dashboard.routes.js';
+import ENV from './config/ENV.js';
 
 const app = express();
 
 app.use(express.json());
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: ENV.CLIENT_URL || 'http://localhost:5173',
     credentials: true,
   }),
 );
