@@ -28,7 +28,7 @@ const Navbar = () => {
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-2.5 group" onClick={closeMobile}>
           <span className="h-9 w-9 rounded-xl bg-orange-500 text-slate-950 flex items-center justify-center text-lg shadow-md shadow-orange-500/20 group-hover:bg-orange-400 transition-colors">
-            🧳
+            ✈️
           </span>
           <span className="font-display text-xl font-semibold text-slate-200 tracking-tight">
             Wanderlog

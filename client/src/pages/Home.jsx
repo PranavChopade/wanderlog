@@ -98,7 +98,7 @@ const Home = () => {
             <p className="mt-1 text-slate-400">Discover adventures from the community</p>
           </div>
           {pagination.totalCount > 0 && (
-            <span className="rounded-full border border-orange-400/20 bg-orange-500/10 px-4 py-1.5 text-sm font-medium text-orange-300">
+            <span className="rounded-full border border-orange-400/20 bg-orange-500/10 px-4 py-1.5 text-sm font-medium text-orange-300 whitespace-nowrap">
               {pagination.totalCount} {pagination.totalCount === 1 ? 'trip' : 'trips'}
             </span>
           )}

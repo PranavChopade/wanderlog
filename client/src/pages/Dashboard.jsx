@@ -118,7 +118,7 @@ const Dashboard = () => {
             <h2 className="text-2xl font-bold text-slate-200">Explore community trips</h2>
             <p className="mt-1 text-sm text-slate-400">Discover adventures from other travelers</p>
           </div>
-          <Link to="/" className="text-sm font-medium text-orange-400 hover:text-orange-300 transition-colors">
+          <Link to="/" className="text-sm font-medium text-orange-400 hover:text-orange-300 transition-colors whitespace-nowrap">
             View all →
           </Link>
         </div>
