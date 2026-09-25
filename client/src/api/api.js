@@ -1,62 +1,44 @@
 import axios from 'axios';
 import ENV from '../config/ENV.js';
 
+// api instance
 const api = axios.create({
   baseURL: ENV.VITE_API_BASE_URL,
   withCredentials: true,
 });
 
-// Flag to prevent multiple concurrent refresh calls
-let isRefreshing = false;
-let failedQueue = [];
+// Shared refresh promise so multiple 401s trigger only one refresh call
+let refreshPromise = null;
 
-const processQueue = (error, token = null) => {
-  failedQueue.forEach((prom) => {
-    if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(token);
-    }
-  });
-  failedQueue = [];
+const refreshAccessToken = () => {
+  if (!refreshPromise) {
+    refreshPromise = api
+      .post('/v1/users/refresh-token')
+      .catch((error) => {
+        throw error;
+      })
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+  return refreshPromise;
 };
 
-// Response interceptor — auto-refresh token on 401
+// Response interceptor — auto-refresh on 401 then retry once
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
+    const original = error.config;
 
-    // Only attempt refresh once per request, and skip for auth endpoints
-    if (
-      error.response?.status === 401 &&
-      !originalRequest._retry &&
-      !originalRequest.url.includes('/users/login') &&
-      !originalRequest.url.includes('/users/register') &&
-      !originalRequest.url.includes('/users/refresh-token')
-    ) {
-      if (isRefreshing) {
-        // Queue the request while refresh is in progress
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        }).then(() => api(originalRequest));
-      }
+    // Skip auth endpoints (a failed login/refresh must not loop)
+    const isAuthRoute = ['/login', '/register', '/refresh-token'].some((p) =>
+      original?.url?.includes(p),
+    );
 
-      originalRequest._retry = true;
-      isRefreshing = true;
-
-      try {
-        await api.post('/v1/users/refresh-token');
-        processQueue(null);
-        return api(originalRequest);
-      } catch (refreshError) {
-        processQueue(refreshError, null);
-        // Clear auth state — redirect to login
-        window.dispatchEvent(new CustomEvent('auth:logout'));
-        return Promise.reject(refreshError);
-      } finally {
-        isRefreshing = false;
-      }
+    if (error.response?.status === 401 && !original._retry && !isAuthRoute) {
+      original._retry = true;
+      await refreshAccessToken();
+      return api(original);
     }
 
     return Promise.reject(error);

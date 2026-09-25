@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { profile, refreshToken } from '../api/user.api.js';
+import { profile } from '../api/user.api.js';
 
 const AuthContext = createContext(null);
 
@@ -18,26 +18,6 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
       }
     })();
-  }, []);
-
-  useEffect(() => {
-    if (!user) return;
-
-    const refreshInterval = setInterval(async () => {
-      try {
-        await refreshToken();
-      } catch {
-        setUser(null);
-      }
-    }, 14 * 60 * 1000);
-
-    return () => clearInterval(refreshInterval);
-  }, [user]);
-
-  useEffect(() => {
-    const handleAuthLogout = () => setUser(null);
-    window.addEventListener('auth:logout', handleAuthLogout);
-    return () => window.removeEventListener('auth:logout', handleAuthLogout);
   }, []);
 
   return (

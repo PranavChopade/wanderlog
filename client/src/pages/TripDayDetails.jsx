@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from 'react-router-dom'
 import useDay from "../hook/useDay";
+import ImagePreview from "../components/ImagePreview";
 
 const formatDate = (date) => {
   const d = new Date(date);
@@ -21,6 +22,7 @@ const TripDayDetails = () => {
   const [editPhotoModal, setEditPhotoModal] = useState(null); // photoUrl to replace
   const [photoFiles, setPhotoFiles] = useState([]);
   const [photoSubmitting, setPhotoSubmitting] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     const fetchDay = async () => {
@@ -133,6 +135,9 @@ const TripDayDetails = () => {
       setPhotoSubmitting(false);
     }
   };
+  const handleImageOpen = (photo) => {
+    setSelectedImage(photo)
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
@@ -220,8 +225,9 @@ const TripDayDetails = () => {
                       alt={`${dayData.title || 'Day'} photo ${index + 1}`}
                       className="h-32 sm:h-40 lg:h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
                       loading="lazy"
+                      onClick={() => handleImageOpen(photo)}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     {/* Delete button on hover */}
                     <button
                       onClick={() => setDeletePhotoModal(photo)}
@@ -387,6 +393,7 @@ const TripDayDetails = () => {
           </div>
         </div>
       )}
+      {selectedImage && <ImagePreview image={selectedImage} onClose={() => setSelectedImage(null)} />}
     </div>
   )
 }

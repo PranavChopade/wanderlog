@@ -9,8 +9,8 @@ const uploadToClaudinary = async (fileBuffer, folder = 'wanderlog') => {
           folder,
           resource_type: 'image',
           transformation: [
-            { quality: 'auto', fetch_format: 'auto' },
-            { height: 1200, width: 1200, crop: 'limit' },
+            { quality: 'auto:best', fetch_format: 'auto' },
+            { height: 2000, width: 2000, crop: 'limit' },
           ],
         },
         (error, result) => {
